@@ -1,9 +1,14 @@
-import numpy as np 
+import numpy as np
+
+
+def sigmoid(h):
+    return 1 / (1 + np.exp(-h))
+
 
 class VanillaLogisticRegression(object):
-    '''
+    """
     A simple logistic regression for binary classification with gradient descent
-    '''
+    """
 
     def __init__(self, learning_rate=0.1, max_iter=100000, tolerance=1e-15):
         # Learning rate for gradient descent
@@ -17,7 +22,6 @@ class VanillaLogisticRegression(object):
         # Convergence criteria
         self._tolerance = tolerance
 
-
     def fit(self, X, y):
         # Add extra dummy feature (x[0] = 1) for bias in linear regression
         X = self.__add_intercept(X)
@@ -29,13 +33,13 @@ class VanillaLogisticRegression(object):
 
         # Iterative gradient descent
         for i in range(self._max_iter):
-            '''
+            """
             Compute logits, gradient, and update weights
-            '''
-            h = np.dot(X , self._weights)
+            """
+            h = np.dot(X, self._weights)
             z = sigmoid(h)
 
-            grad = np.dot((X/n_objects).T, (z - y))
+            grad = np.dot((X / n_objects).T, (z - y))
             self._weights -= self._lr * grad
             # self._weights ...
 
@@ -56,30 +60,20 @@ class VanillaLogisticRegression(object):
 
                 print("Iteration {}: Loss = {}. Accuracy = {}".format(i, loss, acc))
 
-
     def predict(self, X, threshold=0.5):
         X = self.__add_intercept(X)
         proba = self.predict_proba(X)
         predictions = (proba >= threshold).astype(int)
         return predictions
-    
-
-    def sigmoid(h):
-        return 1/(1+np.exp(-h))
-
-
-
 
     def predict_proba(self, X):
         # X = self.__add_intercept(X)
 
         return sigmoid(np.dot(X, self._weights))
 
-
     def __add_intercept(self, X):
         return np.concatenate((np.ones((X.shape[0], 1)), X), axis=1)
 
-
     def __loss(self, y, p):
-      loss = -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))
-      return loss
+        loss = -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))
+        return loss
